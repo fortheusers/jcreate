@@ -1,0 +1,222 @@
+<!--JSON creation for appstore by pwsincd-->
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Appstore JSON creator</title>
+    <style>
+    body {
+        background-color: #414548;
+        font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    }
+    label{
+        color:white;
+    }
+    textarea {
+        width: 95%;
+        padding: 12px 20px;
+        margin: 8px 0;
+        display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+    input[type=text], select {
+        width: 95%;
+        padding: 12px 20px;
+        margin: 8px 0;
+        display: inline-block;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+    input[type=submit] {
+        width: 95%;
+        background-color: #303335;
+        color: white;
+        padding: 14px 20px;
+        margin: 8px 0;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    button {
+        width: 95%;
+        background-color: #303335;
+        color: white;
+        padding: 14px 20px;
+        margin: 8px 0;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    input[type=submit]:hover {
+        background-color: #ffffff;
+        color: #414548;
+    }
+    button:hover {
+        background-color: #ffffff;
+        color: #414548;        
+    }
+    a {
+        display:block;
+        background-color: #303335;
+        color: white;
+        padding: 14px 20px;
+        margin: 8px 0;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        overflow:auto;
+        text-decoration:none;
+    }
+    a:hover {
+        background-color: #ffffff;
+        color: #414548;
+    }
+    .form {
+        width:49%;
+        float:right;
+    }
+    .output {
+        position: fixed;
+        width:49%;
+        float:left;
+    }
+    .app{
+        width: 100%;
+    }
+    #download {
+        width:95%;
+        text-align:center;
+    }
+</style>
+</head>
+<body>
+    <div class="app">
+        <div class="form">
+            <form id="hbform" action="#" method="post">
+                <div>
+                    <label>Application Title</label>
+                    <input type="text" name="title" id="title"/>
+                </div>
+                <div>
+                    <label>Authors</label>
+                    <input type="text" name="author" id="author"/>
+                </div>
+                <div>
+                    <label>Category</label>
+                    <select name="category" id="category">
+                        <option value="none" selected="selected">None</option>
+                        <option value="tool">Tools</option>
+                        <option value="game">Games</option>
+                        <option value="loader">Loaders</option>
+                        <option value="emu">Emulators</option>
+                        <option value="concept">Concepts</option>
+                        <option value="advanced">Advanced</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Version</label>
+                    <input type="text" name="version" id="version"/>
+                </div>
+                <div>
+                    <label>Source URL</label>
+                    <input type="text" name="url" id="url"/>
+                </div>
+                <div>
+                    <label>License</label>
+                    <select name="license" id="license">
+                        <option value="n/a" selected>None</option>
+                        <option value="Affero GPLv3">Affero GPLv3</option>
+                        <option value="Apache v2">Apache v2</option>
+                        <option value="BSD v2">BSD v2</option>
+                        <option value="BSD v3">BSD v3</option>
+                        <option value="Eclipse v2">Eclipse v2</option>
+                        <option value="GPLv2">GPL v2</option>
+                        <option value="GPLv3">GPL v3</option>
+                        <option value="Lesser GPLv2.1">Lesser GPLv2.1</option>
+                        <option value="Lesser GPLv3">Lesser GPLv3</option>
+                        <option value="MIT">MIT</option>
+                        <option value="Mozilla PLv2">Mozilla PLv2</option>
+                        <option value="The Unlicense">The Unlicense</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Short Description</label>
+                    <input type="text" name="description" id="description"/>
+                </div>
+                <div>
+                    <label>Long Description</label>
+                    <textarea id="details" name="details" rows="20"></textarea>
+                </div>
+                <div>
+                    <label>Changelog</label>
+                    <textarea id="changelog" name="changelog" rows="20"></textarea>
+                </div>
+            </div>
+            <div class="output">
+                <img id="icon" src="https://www.wiiubru.com/images/switch_ftu_icon.png" alt="For The Users" width=20% height=20%>
+                <textarea id="output" rows="20"></textarea>
+                <label>JSON Output</label>
+                <input type="submit" value="CREATE JSON"/>
+                <div id="copybutton"></div>
+                <div id="download"></div>
+
+            </div>
+        </div>
+    </body>
+    <script>
+
+        function toJSONString(form) {
+                /*Function to poll input areas and write to an object
+                Modifying the object to be appsotre compatible*/
+                var obj = {};
+                var elements = form.querySelectorAll( "input, select, textarea" );
+                for( var i = 0; i < elements.length; ++i ) {
+                    var element = elements[i];
+                    var name = element.name;
+                    var value = element.value;
+                    if(name) {
+                        obj[name] = value;
+                    }
+                }
+                /*Modify object to be appstore compatible*/
+                deets = document.getElementById("details");
+                var formdeets = deets.value.replace(/\n/g, '\\n');
+                obj["details"] = formdeets;
+                chlog = document.getElementById("changelog");
+                var formlog = chlog.value.replace(/\n/g, '\\n');
+                obj["changelog"] = formlog;
+                return JSON.stringify(obj,undefined,2);
+            }
+            /*Listen for form submission*/ 
+            document.addEventListener( "DOMContentLoaded", function() {
+                var form = document.getElementById( "hbform" );
+                var output = document.getElementById( "output" );
+                form.addEventListener( "submit", function(e) {
+                    e.preventDefault();
+                    var json = toJSONString(this);
+                    output.innerHTML = json;
+                    //clear download button incase of repeat CREATE presses
+                    document.getElementById("download").innerHTML = "";
+                    //Create Copy Text button of textarea
+                    var copybutton = '<button onclick="copytext()">COPY JSON</button>';
+                    document.getElementById("copybutton").innerHTML = copybutton;
+                    //Create download button from json object
+                    var blob = new Blob([json], {type: "application/json"});
+                    var url  = URL.createObjectURL(blob);
+                    var a = document.createElement('a');
+                    a.download    = "info.json";
+                    a.href        = url;
+                    a.textContent = "DOWNLOAD info.json";
+                    document.getElementById('download').appendChild(a);
+                }, false);
+            });
+            function copytext() {
+                var copyText = document.getElementById("output");
+                copyText.select();
+                document.execCommand("copy");
+                alert("Your JSON has been Copied to your Clipboard");
+            }        
+        </script>
+        </html>
